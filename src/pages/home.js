@@ -8,30 +8,35 @@ export default function Home() {
     e.preventDefault();
   };
 
-  // parse through the address string and return an array of address number and street name
+  // parse through the address string and return an list of address number and street name new line
   const parseAddress = (address) => {
-    const addressArray = address.split(',');
-    return addressArray;
+    const addressList = address.split('\n');
+    const [addressNum, streetNum] = addressList.map((address) => {
+      const addressArray = address.split(',');
+      const addressNumAndStreetNum = addressArray[0].split(' ');
+      const addressNum = addressNumAndStreetNum[0];
+      const streetName = addressNumAndStreetNum.slice(1).join(' ');
+      return [addressNum, streetName];
+    });
+    return [addressNum, streetNum];
   };
-
-  // const addressList = address.split('\n');
-  // const addressListParsed = addressList.map((address) => {
-  //   const addressNumber = address.match(/\d+/g);
-  //   const addressStreet = address.match(/[a-zA-Z]+/g);
-  //   return [addressNumber, addressStreet];
-  // });
-  // return addressListParsed;
 
   // use effect that runs when the address state changes
   useEffect(() => {
-    // if the address state is not empty
     if (address) {
       // parse the address
-      const [addressNumber, streetName] = parseAddress(address);
-      // log the address number and street name
-      console.log(addressNumber, streetName);
+      const [addressNum, streetName] = parseAddress(address);
+      getLatLong(addressNum, streetName);
     }
   }, [address]);
+
+  // call geoservice api(https://geoservice.planning.nyc.gov/geoservice/geoservice.svc/Function_1A?Borough=1&AddressNo=120&StreetName=bwy&Key=Key) to get the latitude and longitude of the address
+  const getLatLong = async (addressNum, streetName) => {
+    const url = `https://geoservice.planning.nyc.gov/geoservice/geoservice.svc/Function_1A?Borough=1&AddressNo=${addressNum}&StreetName=${streetName}&Key=BPQ10Hwf9dJlkPxH`;
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log(data);
+  };
 
   return (
     <div className='Home'>
