@@ -7,9 +7,16 @@ export default function Home() {
       {/* A text field form that accepts a csv file and text field and center form*/}
       <div className='container'>
         <div className='row'>
-          <div className='col-md-6 offset-md-3'>
+          <div className='col-md-12 offset-md-0'>
             <form>
               <div className='form-group'>
+                <h5>Copy and paste a list of locations, or upload a csv.</h5>
+                <p>
+                  <small>
+                    When pasting or uploading files, your first column should be
+                    the headers. Columns should be separated by tabs or commas.
+                  </small>
+                </p>
                 <div class='form-floating'>
                   <textarea
                     class='form-control'
@@ -23,7 +30,12 @@ export default function Home() {
                     695, Park Ave, New York, NY, 10065
                   </label>
                 </div>
-
+              </div>
+            </form>
+          </div>
+          <div className='col-md-3 offset-md-0'>
+            <form>
+              <div className='form-group'>
                 <label htmlFor='file'>File</label>
                 <input
                   type='file'
@@ -31,7 +43,6 @@ export default function Home() {
                   id='file'
                   placeholder='Enter file'
                 />
-
                 <button type='submit' className='btn btn-primary mt-3'>
                   Submit
                 </button>
