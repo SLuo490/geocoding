@@ -26,17 +26,22 @@ export default function Home() {
     if (address) {
       // parse the address
       const [addressNum, streetName] = parseAddress(address);
-      getLatLong(addressNum, streetName);
+      fetch(
+        `/geoservice/geoservice.svc/Function_1A?Borough=3&AddressNo=${addressNum}&StreetName=${streetName}&Key=BPQ10Hwf9dJlkPxH`
+      )
+        .then((resp) => {
+          return resp.json();
+        })
+        .then((data) => {
+          console.log(data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   }, [address]);
 
-  // call geoservice api(https://geoservice.planning.nyc.gov/geoservice/geoservice.svc/Function_1A?Borough=1&AddressNo=120&StreetName=bwy&Key=Key) to get the latitude and longitude of the address
-  const getLatLong = async (addressNum, streetName) => {
-    const url = `https://geoservice.planning.nyc.gov/geoservice/geoservice.svc/Function_1A?Borough=1&AddressNo=${addressNum}&StreetName=${streetName}&Key=BPQ10Hwf9dJlkPxH`;
-    const response = await fetch(url);
-    const data = await response.json();
-    console.log(data);
-  };
+  // call geoservice api(https://geoservice.planning.nyc.gov/geoservice/geoservice.svc/Function_1A?Borough=1&AddressNo=120&StreetName=bwy&Key=BPQ10Hwf9dJlkPxH) to get the latitude and longitude of the address  without cors error
 
   return (
     <div className='Home'>
