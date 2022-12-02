@@ -4,35 +4,13 @@ import debounce from 'lodash.debounce';
 export default function Input() {
   // use state that store a string of addresses
   const [address, setAddress] = useState('');
+  // use state to store a list of pair of coordinates
+  const [coordinates, setCoordinates] = useState([[]]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-  };
+    setCoordinates([[]]);
 
-  const changeHandler = debounce((e) => {
-    setAddress(e.target.value);
-  }, 1000);
-
-  // parse the borough, if borough is manhattan return "1", if borough is bronx return "2". etc
-  const parseBorough = (borough) => {
-    // trim the string and make it all lowercase
-    const boroughTrimmed = borough.trim().toLowerCase();
-    console.log(boroughTrimmed);
-    return boroughTrimmed === 'new york'
-      ? '1'
-      : boroughTrimmed === 'bronx'
-      ? '2'
-      : boroughTrimmed === 'brooklyn'
-      ? '3'
-      : boroughTrimmed === 'queens'
-      ? '4'
-      : boroughTrimmed === 'staten island'
-      ? '5'
-      : '';
-  };
-
-  // use effect that runs when the address state changes
-  useEffect(() => {
     // parse through the address string and return an list of address number and street name new line
     const parseAddress = (address) => {
       const addressList = address.split('\n');
@@ -41,7 +19,6 @@ export default function Input() {
         const addressNumAndStreetNum = addressArray[0].split(' ');
         const addressNum = addressNumAndStreetNum[0];
         const streetName = addressNumAndStreetNum.slice(1).join(' ');
-        console.log(addressArray[1]);
         const boroughNum = parseBorough(addressArray[1]);
         return [addressNum, streetName, boroughNum];
       });
@@ -62,7 +39,10 @@ export default function Input() {
               return resp.json();
             })
             .then((data) => {
-              console.log(data);
+              // set the coordinates state to the coordinates of the address
+              const lat = data.display.out_lat_property;
+              const lon = data.display.out_lon_property;
+              setCoordinates((coordinates) => [...coordinates, [lat, lon]]);
             })
             .catch((err) => {
               console.log(err);
@@ -71,7 +51,33 @@ export default function Input() {
         return () => clearTimeout(getData);
       });
     }
-  }, [address]);
+  };
+
+  const changeHandler = debounce((e) => {
+    setAddress(e.target.value);
+  }, 1000);
+
+  // parse the borough, if borough is manhattan return "1", if borough is bronx return "2". etc
+  const parseBorough = (borough) => {
+    // trim the string and make it all lowercase
+    const boroughTrimmed = borough.trim().toLowerCase();
+    return boroughTrimmed === 'new york'
+      ? '1'
+      : boroughTrimmed === 'bronx'
+      ? '2'
+      : boroughTrimmed === 'brooklyn'
+      ? '3'
+      : boroughTrimmed === 'queens'
+      ? '4'
+      : boroughTrimmed === 'staten island'
+      ? '5'
+      : '';
+  };
+
+  // use effect that runs when the address state changes
+  useEffect(() => {
+    console.log(coordinates);
+  }, [coordinates]);
 
   return (
     <div className='container'>
