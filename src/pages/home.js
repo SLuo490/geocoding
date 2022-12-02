@@ -8,36 +8,46 @@ export default function Home() {
     e.preventDefault();
   };
 
+  const changeHandler = (e) => {
+    setAddress(e.target.value);
+  };
+
   // parse through the address string and return an list of address number and street name new line
   const parseAddress = (address) => {
     const addressList = address.split('\n');
-    const [addressNum, streetNum] = addressList.map((address) => {
+    const parse = addressList.map((address) => {
       const addressArray = address.split(',');
       const addressNumAndStreetNum = addressArray[0].split(' ');
       const addressNum = addressNumAndStreetNum[0];
       const streetName = addressNumAndStreetNum.slice(1).join(' ');
       return [addressNum, streetName];
     });
-    return [addressNum, streetNum];
+    return parse;
   };
 
   // use effect that runs when the address state changes
   useEffect(() => {
     if (address) {
       // parse the address
-      const [addressNum, streetName] = parseAddress(address);
-      fetch(
-        `/geoservice/geoservice.svc/Function_1A?Borough=3&AddressNo=${addressNum}&StreetName=${streetName}&Key=BPQ10Hwf9dJlkPxH`
-      )
-        .then((resp) => {
-          return resp.json();
-        })
-        .then((data) => {
-          console.log(data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      const addressNumAndStreetName = parseAddress(address);
+      const addressNum = addressNumAndStreetName[0][0];
+      const streetName = addressNumAndStreetName[0][1];
+
+      const getData = setTimeout(() => {
+        fetch(
+          `/geoservice/geoservice.svc/Function_1A?Borough=3&AddressNo=${addressNum}&StreetName=${streetName}&Key=BPQ10Hwf9dJlkPxH`
+        )
+          .then((resp) => {
+            return resp.json();
+          })
+          .then((data) => {
+            console.log(data);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }, 1000); // wait 1 second before making the request
+      return () => clearTimeout(getData);
     }
   }, [address]);
 
@@ -65,7 +75,7 @@ export default function Home() {
                     placeholder='Address'
                     id='floatingTextarea'
                     style={{ height: '200px' }}
-                    onChange={(e) => setAddress(e.target.value)}
+                    onChange={changeHandler}
                   ></textarea>
                   <label htmlFor='floatingTextarea'>
                     Address Number Street Name, City, State, Zip Code (one per
