@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import debounce from 'lodash.debounce';
 
 export default function Home() {
   // use state that store a string of addresses
@@ -8,9 +9,13 @@ export default function Home() {
     e.preventDefault();
   };
 
-  const changeHandler = (e) => {
+  // const changeHandler = (e) => {
+  //   setAddress(e.target.value);
+  // };
+
+  const changeHandler = debounce((e) => {
     setAddress(e.target.value);
-  };
+  }, 1000);
 
   // parse through the address string and return an list of address number and street name new line
   const parseAddress = (address) => {
@@ -30,6 +35,7 @@ export default function Home() {
     if (address) {
       // parse the address
       const addressNumAndStreetName = parseAddress(address);
+      console.log(addressNumAndStreetName);
       const addressNum = addressNumAndStreetName[0][0];
       const streetName = addressNumAndStreetName[0][1];
 
