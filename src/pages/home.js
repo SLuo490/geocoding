@@ -4,7 +4,6 @@ import debounce from 'lodash.debounce';
 export default function Home() {
   // use state that store a string of addresses
   const [address, setAddress] = useState('');
-  const [borough, setBorough] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -32,33 +31,32 @@ export default function Home() {
       : '';
   };
 
-  // parse through the address string and return an list of address number and street name new line
-  const parseAddress = (address) => {
-    const addressList = address.split('\n');
-    const parse = addressList.map((address) => {
-      const addressArray = address.split(',');
-      const addressNumAndStreetNum = addressArray[0].split(' ');
-      const addressNum = addressNumAndStreetNum[0];
-      const streetName = addressNumAndStreetNum.slice(1).join(' ');
-      const boroughNum = parseBorough(addressArray[1]);
-      setBorough(boroughNum);
-      return [addressNum, streetName];
-    });
-    return parse;
-  };
-
   // use effect that runs when the address state changes
   useEffect(() => {
+    // parse through the address string and return an list of address number and street name new line
+    const parseAddress = (address) => {
+      const addressList = address.split('\n');
+      const parse = addressList.map((address) => {
+        const addressArray = address.split(',');
+        const addressNumAndStreetNum = addressArray[0].split(' ');
+        const addressNum = addressNumAndStreetNum[0];
+        const streetName = addressNumAndStreetNum.slice(1).join(' ');
+        console.log(addressArray[1]);
+        const boroughNum = parseBorough(addressArray[1]);
+        return [addressNum, streetName, boroughNum];
+      });
+      return parse;
+    };
+
     if (address) {
       // parse the address
-      const addressNumAndStreetName = parseAddress(address);
-      console.log(borough);
+      const currentAddressArray = parseAddress(address);
       // loop through addressNumAndStreetName and make fetch request to each address
-      addressNumAndStreetName.forEach((address) => {
-        const [addressNum, streetName] = address;
+      currentAddressArray.forEach((address) => {
+        const [addressNum, streetName, boroughNum] = address;
         const getData = setTimeout(() => {
           fetch(
-            `/geoservice/geoservice.svc/Function_1A?Borough=${borough}&AddressNo=${addressNum}&StreetName=${streetName}&Key=${process.env.REACT_APP_API_KEY}`
+            `/geoservice/geoservice.svc/Function_1A?Borough=${boroughNum}&AddressNo=${addressNum}&StreetName=${streetName}&Key=${process.env.REACT_APP_API_KEY}`
           )
             .then((resp) => {
               return resp.json();
