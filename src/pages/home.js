@@ -31,25 +31,25 @@ export default function Home() {
     if (address) {
       // parse the address
       const addressNumAndStreetName = parseAddress(address);
-      console.log(addressNumAndStreetName);
-      const addressNum = addressNumAndStreetName[0][0];
-      const streetName = addressNumAndStreetName[0][1];
-
-      const getData = setTimeout(() => {
-        fetch(
-          `/geoservice/geoservice.svc/Function_1A?Borough=3&AddressNo=${addressNum}&StreetName=${streetName}&Key=${process.env.REACT_APP_API_KEY}`
-        )
-          .then((resp) => {
-            return resp.json();
-          })
-          .then((data) => {
-            console.log(data);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }, 1000); // wait 1 second before making the request
-      return () => clearTimeout(getData);
+      // loop through addressNumAndStreetName and make fetch request to each address
+      addressNumAndStreetName.forEach((address) => {
+        const [addressNum, streetName] = address;
+        const getData = setTimeout(() => {
+          fetch(
+            `/geoservice/geoservice.svc/Function_1A?Borough=3&AddressNo=${addressNum}&StreetName=${streetName}&Key=${process.env.REACT_APP_API_KEY}`
+          )
+            .then((resp) => {
+              return resp.json();
+            })
+            .then((data) => {
+              console.log(data);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }, 1000); // wait 1 second before making the request
+        return () => clearTimeout(getData);
+      });
     }
   }, [address]);
 
