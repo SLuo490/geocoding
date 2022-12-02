@@ -4,6 +4,7 @@ import debounce from 'lodash.debounce';
 export default function Home() {
   // use state that store a string of addresses
   const [address, setAddress] = useState('');
+  const [borough, setBorough] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -13,6 +14,24 @@ export default function Home() {
     setAddress(e.target.value);
   }, 1000);
 
+  // parse the borough, if borough is manhattan return "1", if borough is bronx return "2". etc
+  const parseBorough = (borough) => {
+    // trim the string and make it all lowercase
+    const boroughTrimmed = borough.trim().toLowerCase();
+    console.log(boroughTrimmed);
+    return boroughTrimmed === 'new york'
+      ? '1'
+      : boroughTrimmed === 'bronx'
+      ? '2'
+      : boroughTrimmed === 'brooklyn'
+      ? '3'
+      : boroughTrimmed === 'queens'
+      ? '4'
+      : boroughTrimmed === 'staten island'
+      ? '5'
+      : '';
+  };
+
   // parse through the address string and return an list of address number and street name new line
   const parseAddress = (address) => {
     const addressList = address.split('\n');
@@ -21,6 +40,8 @@ export default function Home() {
       const addressNumAndStreetNum = addressArray[0].split(' ');
       const addressNum = addressNumAndStreetNum[0];
       const streetName = addressNumAndStreetNum.slice(1).join(' ');
+      const boroughNum = parseBorough(addressArray[1]);
+      setBorough(boroughNum);
       return [addressNum, streetName];
     });
     return parse;
@@ -31,12 +52,13 @@ export default function Home() {
     if (address) {
       // parse the address
       const addressNumAndStreetName = parseAddress(address);
+      console.log(borough);
       // loop through addressNumAndStreetName and make fetch request to each address
       addressNumAndStreetName.forEach((address) => {
         const [addressNum, streetName] = address;
         const getData = setTimeout(() => {
           fetch(
-            `/geoservice/geoservice.svc/Function_1A?Borough=3&AddressNo=${addressNum}&StreetName=${streetName}&Key=${process.env.REACT_APP_API_KEY}`
+            `/geoservice/geoservice.svc/Function_1A?Borough=${borough}&AddressNo=${addressNum}&StreetName=${streetName}&Key=${process.env.REACT_APP_API_KEY}`
           )
             .then((resp) => {
               return resp.json();
