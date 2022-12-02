@@ -9,10 +9,6 @@ export default function Home() {
     e.preventDefault();
   };
 
-  // const changeHandler = (e) => {
-  //   setAddress(e.target.value);
-  // };
-
   const changeHandler = debounce((e) => {
     setAddress(e.target.value);
   }, 1000);
@@ -41,7 +37,7 @@ export default function Home() {
 
       const getData = setTimeout(() => {
         fetch(
-          `/geoservice/geoservice.svc/Function_1A?Borough=3&AddressNo=${addressNum}&StreetName=${streetName}&Key=BPQ10Hwf9dJlkPxH`
+          `/geoservice/geoservice.svc/Function_1A?Borough=3&AddressNo=${addressNum}&StreetName=${streetName}&Key=${process.env.REACT_APP_API_KEY}`
         )
           .then((resp) => {
             return resp.json();
@@ -56,8 +52,6 @@ export default function Home() {
       return () => clearTimeout(getData);
     }
   }, [address]);
-
-  // call geoservice api(https://geoservice.planning.nyc.gov/geoservice/geoservice.svc/Function_1A?Borough=1&AddressNo=120&StreetName=bwy&Key=BPQ10Hwf9dJlkPxH) to get the latitude and longitude of the address  without cors error
 
   return (
     <div className='Home'>
