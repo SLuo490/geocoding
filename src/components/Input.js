@@ -5,15 +5,13 @@ import Output from './Output';
 export default function Input() {
   // use state that store a string of addresses
   const [address, setAddress] = useState('');
-  // use state to store a list of pair of coordinates
-  const [coordinates, setCoordinates] = useState([[]]);
-
   const [result, setResult] = useState([[]]);
+  const [coordinates, setCoordinates] = useState([[]]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setCoordinates([[]]);
     setResult([[]]);
+    setCoordinates([[]]);
 
     // parse through the address string and return an list of address number and street name new line
     const parseAddress = (address) => {
@@ -24,8 +22,8 @@ export default function Input() {
         const addressNum = addressNumAndStreetNum[0];
         const streetName = addressNumAndStreetNum.slice(1).join(' ');
         const boroughNum = parseBorough(addressArray[1]);
-        const zipCode = addressArray[3];
-        return [addressNum, streetName, boroughNum, zipCode];
+        const stateAndZip = addressArray[2];
+        return [addressNum, streetName, boroughNum, stateAndZip];
       });
       return parse;
     };
@@ -35,7 +33,7 @@ export default function Input() {
       const currentAddressArray = parseAddress(address);
       // loop through addressNumAndStreetName and make fetch request to each address
       currentAddressArray.forEach((address) => {
-        const [addressNum, streetName, boroughNum, zipCode] = address;
+        const [addressNum, streetName, boroughNum, stateAndZip] = address;
         const getData = async () => {
           await fetch(
             `/geoservice/geoservice.svc/Function_1A?Borough=${boroughNum}&AddressNo=${addressNum}&StreetName=${streetName}&Key=${process.env.REACT_APP_API_KEY}`
@@ -50,7 +48,7 @@ export default function Input() {
               setCoordinates((coordinates) => [...coordinates, [lat, lon]]);
               setResult((result) => [
                 ...result,
-                [addressNum, streetName, boroughNum, zipCode, lat, lon],
+                [addressNum, streetName, boroughNum, stateAndZip, lat, lon],
               ]);
             })
             .catch((err) => {
@@ -60,6 +58,7 @@ export default function Input() {
         getData();
       });
     }
+    console.log(coordinates);
   };
 
   const changeHandler = debounce((e) => {
@@ -84,7 +83,7 @@ export default function Input() {
   };
 
   // use effect that runs when the address state changes
-  useEffect(() => {}, [result]);
+  useEffect(() => {}, [result, coordinates]);
 
   // map results to output
   const output = result.map((result) => {

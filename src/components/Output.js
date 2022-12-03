@@ -24,27 +24,23 @@ export default function Output(props) {
     if (result) {
       const cleanResult = (result) => {
         const clean = result.filter((item) => item.length > 0);
-
         const cleanResultArray = clean.map((address) => {
-          const [addressNum, streetName, boroughNum, zipCode, lat, lon] =
+          const [addressNum, streetName, boroughNum, stateAndZip, lat, lon] =
             address;
           const addressNumAndStreetName = `${addressNum} ${streetName}`;
           const boroughName = parseBorough(boroughNum);
           const newBoroughName = ' ' + boroughName;
-          const state = ' NY';
           const newLat = ' ' + lat;
           const newLon = ' ' + lon;
 
           return [
             addressNumAndStreetName,
             newBoroughName,
-            state,
-            zipCode,
+            stateAndZip,
             newLat,
             newLon,
           ];
         });
-
         const newCleanResultArray = cleanResultArray.join('\n');
 
         setShowResult(newCleanResultArray);
