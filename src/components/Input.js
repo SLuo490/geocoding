@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import debounce from 'lodash.debounce';
 import Output from './Output';
 
@@ -133,6 +134,28 @@ export default function Input() {
                 </div>
               </div>
             </form>
+          </div>
+        </div>
+      </div>
+      <div className='container pt-4'>
+        <div className='row'>
+          <div className='col-md-12 offset-md-0'>
+            <MapContainer
+              style={{ height: '75vh', width: '100%' }}
+              center={[40.7128, -74.006]}
+              zoom={13}
+              scrollWheelZoom={false}
+            >
+              <TileLayer
+                url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              />
+              <Marker position={[40.7128, -74.006]}>
+                <Popup>
+                  A pretty CSS3 popup. <br /> Easily customizable.
+                </Popup>
+              </Marker>
+            </MapContainer>
           </div>
         </div>
       </div>
