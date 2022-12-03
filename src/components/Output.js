@@ -3,10 +3,46 @@ export default function Output(props) {
   const [showResult, setShowResult] = useState('');
   const { result } = props;
 
-  // clean result
+  const parseBorough = (borough) => {
+    switch (borough) {
+      case '1':
+        return 'Manhattan';
+      case '2':
+        return 'Bronx';
+      case '3':
+        return 'Brooklyn';
+      case '4':
+        return 'Queens';
+      case '5':
+        return 'Staten Island';
+      default:
+        return '';
+    }
+  };
+
+  // // clean result
+  // const cleanResult = (result) => {
+  //   const clean = result.filter((item) => item.length > 0);
+
+  //   // change the 3rd element of each array to the borough name
+  //   const cleanResultArray = clean.map((address) => {
+  //     const [addressNum, streetName, boroughNum, lat, lon] = address;
+  //     const boroughName = parseBorough(boroughNum);
+  //     return [addressNum, streetName, boroughName, lat, lon];
+  //   });
+  //   setShowResult(cleanResultArray);
+  // };
+  // cleanResult(result);
+
   const cleanResult = (result) => {
     const clean = result.filter((item) => item.length > 0);
-    setShowResult(clean);
+
+    const cleanResultArray = clean.map((address) => {
+      const [addressNum, streetName, boroughNum, lat, lon] = address;
+      const boroughName = parseBorough(boroughNum);
+      return [addressNum, streetName, boroughName, lat, lon];
+    });
+    setShowResult(cleanResultArray);
   };
 
   useEffect(() => {
