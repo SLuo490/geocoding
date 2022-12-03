@@ -83,9 +83,7 @@ export default function Input() {
   };
 
   // use effect that runs when the address state changes
-  useEffect(() => {
-    console.log(result);
-  }, [result]);
+  useEffect(() => {}, [result]);
 
   // map results to output
   const output = result.map((result) => {

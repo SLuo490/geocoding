@@ -1,7 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 export default function Output(props) {
+  const [showResult, setShowResult] = useState('');
   const { result } = props;
-  const [showResult, setShowResult] = useState(false);
+
+  // clean result
+  const cleanResult = (result) => {
+    const clean = result.filter((item) => item.length > 0);
+    setShowResult(clean);
+  };
+
+  useEffect(() => {
+    cleanResult(result);
+  }, [result]);
 
   return (
     // Returns a text field of the address's coordinates
@@ -20,8 +30,8 @@ export default function Output(props) {
                     placeholder='Address'
                     id='floatingTextarea'
                     style={{ height: '200px' }}
-                    defaultValue={result}
-                    onChange={() => setShowResult(true)}
+                    defaultValue={showResult}
+                    onChange={(e) => setShowResult(e.target.value)}
                   ></textarea>
                   <label htmlFor='floatingTextarea'>
                     Address Number, Street Name, City, State, Zip Code,
