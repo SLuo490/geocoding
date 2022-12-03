@@ -20,33 +20,37 @@ export default function Output(props) {
     }
   };
 
-  // // clean result
-  // const cleanResult = (result) => {
-  //   const clean = result.filter((item) => item.length > 0);
-
-  //   // change the 3rd element of each array to the borough name
-  //   const cleanResultArray = clean.map((address) => {
-  //     const [addressNum, streetName, boroughNum, lat, lon] = address;
-  //     const boroughName = parseBorough(boroughNum);
-  //     return [addressNum, streetName, boroughName, lat, lon];
-  //   });
-  //   setShowResult(cleanResultArray);
-  // };
-  // cleanResult(result);
-
-  const cleanResult = (result) => {
-    const clean = result.filter((item) => item.length > 0);
-
-    const cleanResultArray = clean.map((address) => {
-      const [addressNum, streetName, boroughNum, lat, lon] = address;
-      const boroughName = parseBorough(boroughNum);
-      return [addressNum, streetName, boroughName, lat, lon];
-    });
-    setShowResult(cleanResultArray);
-  };
-
   useEffect(() => {
-    cleanResult(result);
+    if (result) {
+      const cleanResult = (result) => {
+        const clean = result.filter((item) => item.length > 0);
+
+        const cleanResultArray = clean.map((address) => {
+          const [addressNum, streetName, boroughNum, zipCode, lat, lon] =
+            address;
+          const addressNumAndStreetName = `${addressNum} ${streetName}`;
+          const boroughName = parseBorough(boroughNum);
+          const newBoroughName = ' ' + boroughName;
+          const state = ' NY';
+          const newLat = ' ' + lat;
+          const newLon = ' ' + lon;
+
+          return [
+            addressNumAndStreetName,
+            newBoroughName,
+            state,
+            zipCode,
+            newLat,
+            newLon,
+          ];
+        });
+
+        const newCleanResultArray = cleanResultArray.join('\n');
+
+        setShowResult(newCleanResultArray);
+      };
+      cleanResult(result);
+    }
   }, [result]);
 
   return (

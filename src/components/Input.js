@@ -24,7 +24,8 @@ export default function Input() {
         const addressNum = addressNumAndStreetNum[0];
         const streetName = addressNumAndStreetNum.slice(1).join(' ');
         const boroughNum = parseBorough(addressArray[1]);
-        return [addressNum, streetName, boroughNum];
+        const zipCode = addressArray[3];
+        return [addressNum, streetName, boroughNum, zipCode];
       });
       return parse;
     };
@@ -34,9 +35,9 @@ export default function Input() {
       const currentAddressArray = parseAddress(address);
       // loop through addressNumAndStreetName and make fetch request to each address
       currentAddressArray.forEach((address) => {
-        const [addressNum, streetName, boroughNum] = address;
-        const getData = setTimeout(() => {
-          fetch(
+        const [addressNum, streetName, boroughNum, zipCode] = address;
+        const getData = async () => {
+          await fetch(
             `/geoservice/geoservice.svc/Function_1A?Borough=${boroughNum}&AddressNo=${addressNum}&StreetName=${streetName}&Key=${process.env.REACT_APP_API_KEY}`
           )
             .then((resp) => {
@@ -49,14 +50,14 @@ export default function Input() {
               setCoordinates((coordinates) => [...coordinates, [lat, lon]]);
               setResult((result) => [
                 ...result,
-                [addressNum, streetName, boroughNum, lat, lon],
+                [addressNum, streetName, boroughNum, zipCode, lat, lon],
               ]);
             })
             .catch((err) => {
               console.log(err);
             });
-        }, 1000); // wait 1 second before making the request
-        return () => clearTimeout(getData);
+        };
+        getData();
       });
     }
   };
@@ -100,8 +101,10 @@ export default function Input() {
                 <h5>Copy and paste a list of locations, or upload a csv.</h5>
                 <p>
                   <small>
-                    When pasting or uploading files, your first column should be
-                    the headers. Columns should be separated by tabs or commas.
+                    When pasting or uploading files, make sure there are no
+                    trailing spaces and do not include a header row.
+                    <br />
+                    Make sure the last line is not empty
                   </small>
                 </p>
                 <div className='form-floating'>
