@@ -6,7 +6,6 @@ export default function Home() {
     <div className='Home'>
       <h1 className='text-center py-3'>Geocoding Application</h1>
       <Input />
-      <Output />
     </div>
   );
 }

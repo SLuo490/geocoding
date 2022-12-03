@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import debounce from 'lodash.debounce';
+import Output from './Output';
 
 export default function Input() {
   // use state that store a string of addresses
@@ -7,9 +8,12 @@ export default function Input() {
   // use state to store a list of pair of coordinates
   const [coordinates, setCoordinates] = useState([[]]);
 
+  const [result, setResult] = useState([[]]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setCoordinates([[]]);
+    setResult([[]]);
 
     // parse through the address string and return an list of address number and street name new line
     const parseAddress = (address) => {
@@ -43,6 +47,10 @@ export default function Input() {
               const lat = data.display.out_lat_property;
               const lon = data.display.out_lon_property;
               setCoordinates((coordinates) => [...coordinates, [lat, lon]]);
+              setResult((result) => [
+                ...result,
+                [addressNum, streetName, boroughNum, lat, lon],
+              ]);
             })
             .catch((err) => {
               console.log(err);
@@ -76,50 +84,60 @@ export default function Input() {
 
   // use effect that runs when the address state changes
   useEffect(() => {
-    console.log(coordinates);
-  }, [coordinates]);
+    console.log(result);
+  }, [result]);
+
+  // map results to output
+  const output = result.map((result) => {
+    return <Output result={result} />;
+  });
 
   return (
-    <div className='container'>
-      <div className='row'>
-        <div className='col-md-12 offset-md-0'>
-          <form onSubmit={handleSubmit}>
-            <div className='form-group'>
-              <h5>Copy and paste a list of locations, or upload a csv.</h5>
-              <p>
-                <small>
-                  When pasting or uploading files, your first column should be
-                  the headers. Columns should be separated by tabs or commas.
-                </small>
-              </p>
-              <div className='form-floating'>
-                <textarea
-                  className='form-control'
-                  placeholder='Address'
-                  id='floatingTextarea'
-                  style={{ height: '200px' }}
-                  onChange={changeHandler}
-                ></textarea>
-                <label htmlFor='floatingTextarea'>
-                  Address Number Street Name, City, State, Zip Code (one per
-                  line)
-                </label>
-              </div>
+    <div>
+      <div className='container'>
+        <div className='row'>
+          <div className='col-md-12 offset-md-0'>
+            <form onSubmit={handleSubmit}>
               <div className='form-group'>
-                <label htmlFor='file'>File</label>
-                <input
-                  type='file'
-                  className='form-control'
-                  id='file'
-                  placeholder='Enter file'
-                />
-                <button type='submit' className='btn btn-primary mt-3'>
-                  Submit
-                </button>
+                <h5>Copy and paste a list of locations, or upload a csv.</h5>
+                <p>
+                  <small>
+                    When pasting or uploading files, your first column should be
+                    the headers. Columns should be separated by tabs or commas.
+                  </small>
+                </p>
+                <div className='form-floating'>
+                  <textarea
+                    className='form-control'
+                    placeholder='Address'
+                    id='floatingTextarea'
+                    style={{ height: '200px' }}
+                    onChange={changeHandler}
+                  ></textarea>
+                  <label htmlFor='floatingTextarea'>
+                    Address Number Street Name, City, State, Zip Code (one per
+                    line)
+                  </label>
+                </div>
+                <div className='form-group'>
+                  <label htmlFor='file'>File</label>
+                  <input
+                    type='file'
+                    className='form-control'
+                    id='file'
+                    placeholder='Enter file'
+                  />
+                  <button type='submit' className='btn btn-primary mt-3'>
+                    Submit
+                  </button>
+                </div>
               </div>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
+      </div>
+      <div>
+        <Output result={result} />
       </div>
     </div>
   );

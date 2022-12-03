@@ -1,4 +1,8 @@
-export default function Output() {
+import { useState } from 'react';
+export default function Output(props) {
+  const { result } = props;
+  const [showResult, setShowResult] = useState(false);
+
   return (
     // Returns a text field of the address's coordinates
     <div className='Output'>
@@ -16,6 +20,8 @@ export default function Output() {
                     placeholder='Address'
                     id='floatingTextarea'
                     style={{ height: '200px' }}
+                    defaultValue={result}
+                    onChange={() => setShowResult(true)}
                   ></textarea>
                   <label htmlFor='floatingTextarea'>
                     Address Number, Street Name, City, State, Zip Code,
