@@ -8,6 +8,8 @@ export default function Input() {
   const [address, setAddress] = useState('');
   const [result, setResult] = useState([[]]);
   const [coordinates, setCoordinates] = useState([[]]);
+  const [coordinatesResult, setCoordinatesResult] = useState([[]]);
+  const [ready, setReady] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -59,7 +61,6 @@ export default function Input() {
         getData();
       });
     }
-    console.log(coordinates);
   };
 
   const changeHandler = debounce((e) => {
@@ -83,8 +84,17 @@ export default function Input() {
       : '';
   };
 
-  // use effect that runs when the address state changes
-  useEffect(() => {}, [result, coordinates]);
+  useEffect(() => {
+    if (result) {
+      // clean coordinates
+      const cleanCoordinates = (coordinates) => {
+        const clean = coordinates.filter((item) => item.length > 0);
+        setCoordinatesResult(clean);
+      };
+      cleanCoordinates(coordinates);
+      setReady(true);
+    }
+  }, [coordinates, result]);
 
   // map results to output
   const output = result.map((result) => {
@@ -143,18 +153,26 @@ export default function Input() {
             <MapContainer
               style={{ height: '75vh', width: '100%' }}
               center={[40.7128, -74.006]}
-              zoom={13}
+              zoom={12}
               scrollWheelZoom={false}
             >
               <TileLayer
                 url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               />
-              <Marker position={[40.7128, -74.006]}>
-                <Popup>
-                  A pretty CSS3 popup. <br /> Easily customizable.
-                </Popup>
-              </Marker>
+              {/* Make a marker once coordinatesResult have coordinates */}
+              {ready &&
+                coordinatesResult.map((coordinates) => {
+                  return (
+                    <Marker position={[coordinates[0], coordinates[1]]}>
+                      <Popup>
+                        <span>
+                          {coordinates[0]}, {coordinates[1]}
+                        </span>
+                      </Popup>
+                    </Marker>
+                  );
+                })}
             </MapContainer>
           </div>
         </div>
