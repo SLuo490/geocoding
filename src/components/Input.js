@@ -85,6 +85,7 @@ export default function Input() {
             setError(err);
           });
       };
+      getData();
     });
     setReady(false);
   };
@@ -100,11 +101,6 @@ export default function Input() {
       setReady(true);
     }
   }, [coordinates, result]);
-
-  // map results to output
-  const output = result.map((result) => {
-    return <Output result={result} />;
-  });
 
   return (
     <div>
