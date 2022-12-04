@@ -57,7 +57,7 @@ export default function Output(props) {
         <div className='row'>
           <div className='col-12'>
             <form>
-              <div className='form-group pt-4'>
+              <div className='form-group py-5'>
                 <h5>
                   Copy and paste coordinates to spreadsheet, or
                   <CSVLink data={showResult} className='text-decoration-none'>

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import debounce from 'lodash.debounce';
 import Output from './Output';
+import ErrorAlert from './ErrorAlert';
 import uuid from 'react-uuid';
 import '../App.css';
 
@@ -12,11 +13,38 @@ export default function Input() {
   const [coordinates, setCoordinates] = useState([[]]);
   const [coordinatesResult, setCoordinatesResult] = useState([[]]);
   const [ready, setReady] = useState(false);
+  const [error, setError] = useState('');
+
+  // parse the borough, if borough is manhattan return "1", if borough is bronx return "2". etc.
+  const parseBorough = (borough) => {
+    // trim the string and make it all lowercase
+    const boroughTrimmed =
+      typeof borough === 'string' ? borough.trim().toLowerCase() : '';
+    return boroughTrimmed === 'new york'
+      ? '1'
+      : boroughTrimmed === 'bronx'
+      ? '2'
+      : boroughTrimmed === 'brooklyn'
+      ? '3'
+      : boroughTrimmed === 'queens'
+      ? '4'
+      : boroughTrimmed === 'staten island'
+      ? '5'
+      : '';
+  };
+
+  const changeHandler = debounce((e) => {
+    setAddress(e.target.value);
+  }, 1000);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setResult([[]]);
     setCoordinates([[]]);
+
+    // if (!address) {
+    //   setError('Please enter an address');
+    // }
 
     // parse through the address string and return an list of address number and street name new line
     const parseAddress = (address) => {
@@ -57,33 +85,12 @@ export default function Input() {
               ]);
             })
             .catch((err) => {
-              console.log(err);
+              setError(err);
             });
         };
         getData();
       });
     }
-  };
-
-  const changeHandler = debounce((e) => {
-    setAddress(e.target.value);
-  }, 1000);
-
-  // parse the borough, if borough is manhattan return "1", if borough is bronx return "2". etc
-  const parseBorough = (borough) => {
-    // trim the string and make it all lowercase
-    const boroughTrimmed = borough.trim().toLowerCase();
-    return boroughTrimmed === 'new york'
-      ? '1'
-      : boroughTrimmed === 'bronx'
-      ? '2'
-      : boroughTrimmed === 'brooklyn'
-      ? '3'
-      : boroughTrimmed === 'queens'
-      ? '4'
-      : boroughTrimmed === 'staten island'
-      ? '5'
-      : '';
   };
 
   useEffect(() => {
@@ -105,6 +112,7 @@ export default function Input() {
 
   return (
     <div>
+      {error && <ErrorAlert details={error} />}
       <div className='container'>
         <div className='row'>
           <div className='col-md-12 offset-md-0'>
@@ -152,7 +160,7 @@ export default function Input() {
         <div className='row'>
           <div className='col-md-12 offset-md-0'>
             <MapContainer
-              style={{ height: '75vh', width: '100%' }}
+              style={{ height: '50vh', width: '100%' }}
               center={[40.7128, -74.006]}
               zoom={12}
               scrollWheelZoom={false}

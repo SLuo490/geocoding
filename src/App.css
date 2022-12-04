@@ -2,16 +2,38 @@
   height: 100%;
 }
 
-/* Set background of form-floating to white */
-
-.form-floating {
-  position: relative;
+/* Fix form floating from overlapping with text */
+.form-floating > .form-control:not(:-moz-placeholder-shown) ~ label {
+  opacity: 1;
+  color: rgba(0, 0, 0, 0.5);
+  background-color: #fff;
+  height: auto;
+  padding: 0px;
+  padding: 0px 0px 0px 10px;
+  width: 100%;
+  transform: scale(0.982) translateY(0.045rem) translateX(0.1rem);
+  border-radius: 5px 0 0 0;
 }
-
-.form-floating:before {
-  content: '';
-  position: absolute;
-  width: calc(100% - 14px); /* to show scrollbar */
-  height: 32px;
-  background-color: #ffffff;
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label,
+.form-floating > .form-select ~ label {
+  opacity: 1;
+  color: rgba(0, 0, 0, 0.5);
+  background-color: #fff;
+  height: auto;
+  padding: 0px 0px 0px 10px;
+  width: 100%;
+  transform: scale(0.982) translateY(0.045rem) translateX(0.1rem);
+  border-radius: 5px 0 0 0;
+}
+.form-floating > .form-control:-webkit-autofill ~ label {
+  opacity: 1;
+  color: rgba(0, 0, 0, 0.5);
+  background-color: #fff;
+  height: auto;
+  padding: 0px;
+  padding: 0px 0px 0px 10px;
+  width: 100%;
+  transform: scale(0.982) translateY(0.045rem) translateX(0.1rem);
+  border-radius: 5px 0 0 0;
 }
