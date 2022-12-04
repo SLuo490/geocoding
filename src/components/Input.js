@@ -38,53 +38,60 @@ export default function Input() {
     setAddress(e.target.value);
   }, 1000);
 
+  // parse through the address string and return an list of address number and street name new line
+  const parseAddress = (address) => {
+    const addressList = address.split('\n');
+    const parse = addressList.map((address) => {
+      const addressArray = address.split(',');
+      const addressNumAndStreetNum = addressArray[0].split(' ');
+      const addressNum = addressNumAndStreetNum[0];
+      const streetName = addressNumAndStreetNum.slice(1).join(' ');
+      const boroughNum = parseBorough(addressArray[1]);
+      const stateAndZip = addressArray[2];
+      return [addressNum, streetName, boroughNum, stateAndZip];
+    });
+    return parse;
+  };
+
+  // Call data for one fetch
+  const getData = async (addressNum, streetName, boroughNum, stateAndZip) => {
+    await fetch(
+      `/geoservice/geoservice.svc/Function_1A?Borough=${boroughNum}&AddressNo=${addressNum}&StreetName=${streetName}&Key=${process.env.REACT_APP_API_KEY}`
+    )
+      .then((resp) => {
+        return resp.json();
+      })
+      .then((data) => {
+        // set the coordinates state to the coordinates of the address
+        const lat = data.display.out_lat_property;
+        const lon = data.display.out_lon_property;
+        setCoordinates((coordinates) => [...coordinates, [lat, lon]]);
+        setResult((result) => [
+          ...result,
+          [addressNum, streetName, boroughNum, stateAndZip, lat, lon],
+        ]);
+      })
+      .catch((err) => {
+        setError(err);
+      });
+  };
+
+  // Call fetch for all data
+  const fetchAllData = async (address) => {
+    const currentAddressArray = parseAddress(address);
+    currentAddressArray.forEach((address) => {
+      const [addressNum, streetName, boroughNum, stateAndZip] = address;
+      getData(addressNum, streetName, boroughNum, stateAndZip);
+    });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setReady(true);
 
-    // parse through the address string and return an list of address number and street name new line
-    const parseAddress = (address) => {
-      const addressList = address.split('\n');
-      const parse = addressList.map((address) => {
-        const addressArray = address.split(',');
-        const addressNumAndStreetNum = addressArray[0].split(' ');
-        const addressNum = addressNumAndStreetNum[0];
-        const streetName = addressNumAndStreetNum.slice(1).join(' ');
-        const boroughNum = parseBorough(addressArray[1]);
-        const stateAndZip = addressArray[2];
-        return [addressNum, streetName, boroughNum, stateAndZip];
-      });
-      return parse;
-    };
+    // fetch data for all addresses
+    fetchAllData(address);
 
-    // parse the address
-    const currentAddressArray = parseAddress(address);
-    // loop through addressNumAndStreetName and make fetch request to each address
-    currentAddressArray.forEach((address) => {
-      const [addressNum, streetName, boroughNum, stateAndZip] = address;
-      const getData = async () => {
-        await fetch(
-          `/geoservice/geoservice.svc/Function_1A?Borough=${boroughNum}&AddressNo=${addressNum}&StreetName=${streetName}&Key=${process.env.REACT_APP_API_KEY}`
-        )
-          .then((resp) => {
-            return resp.json();
-          })
-          .then((data) => {
-            // set the coordinates state to the coordinates of the address
-            const lat = data.display.out_lat_property;
-            const lon = data.display.out_lon_property;
-            setCoordinates((coordinates) => [...coordinates, [lat, lon]]);
-            setResult((result) => [
-              ...result,
-              [addressNum, streetName, boroughNum, stateAndZip, lat, lon],
-            ]);
-          })
-          .catch((err) => {
-            setError(err);
-          });
-      };
-      getData();
-    });
     setReady(false);
     setCoordinates([]);
     setResult([]);
