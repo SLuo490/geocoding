@@ -40,8 +40,6 @@ export default function Input() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setCoordinates([]);
-    setResult([]);
     setReady(true);
 
     // parse through the address string and return an list of address number and street name new line
@@ -88,6 +86,8 @@ export default function Input() {
       getData();
     });
     setReady(false);
+    setCoordinates([]);
+    setResult([]);
   };
 
   useEffect(() => {
