@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
-import debounce from 'lodash.debounce';
+import Papa from 'papaparse';
 import Output from './Output';
 import ErrorAlert from './ErrorAlert';
 import MarkerComponent from './Marker';
@@ -10,11 +10,59 @@ import '../App.css';
 export default function Input() {
   // use state that store a string of addresses
   const [address, setAddress] = useState('');
-  const [result, setResult] = useState([[]]);
   const [coordinates, setCoordinates] = useState([[]]);
+
+  // use state that store the results of the geocoding
+  const [result, setResult] = useState([[]]);
   const [coordinatesResult, setCoordinatesResult] = useState([[]]);
+
   const [ready, setReady] = useState(false);
   const [error, setError] = useState('');
+
+  // Use state to parse the csv file
+  const [values, setValues] = useState([]);
+
+  const changeHandler = (e) => {
+    setAddress(e.target.value);
+  };
+
+  const csvHandler = (e) => {
+    // parse the file data
+    Papa.parse(e.target.files[0], {
+      header: true,
+      skipEmptyLines: true,
+      complete: (results) => {
+        const valuesArray = [];
+        results.data.forEach((row) => {
+          valuesArray.push({
+            id: uuid(),
+            address: row['Address Number'],
+            street: row['Street Name'],
+            borough: row['Borough'],
+            state: row['State'],
+            zip: row['Zip Code'],
+          });
+        });
+        setValues(valuesArray);
+      },
+    });
+  };
+
+  useEffect(() => {
+    // parse the values array and store the address in a string
+    if (values === undefined) {
+      setValues([['abc']]);
+    } else {
+      const parseValues = () => {
+        let addressString = '';
+        values.forEach((value) => {
+          addressString += `${value.address} ${value.street}, ${value.borough}, ${value.state} ${value.zip} \n`;
+        });
+        setAddress(addressString);
+      };
+      parseValues();
+    }
+  }, [values]);
 
   // parse the borough, if borough is manhattan return "1", if borough is bronx return "2". etc.
   const parseBorough = (borough) => {
@@ -32,10 +80,6 @@ export default function Input() {
       : boroughTrimmed === 'staten island'
       ? '5'
       : '';
-  };
-
-  const changeHandler = (e) => {
-    setAddress(e.target.value);
   };
 
   // parse through the address string and return an list of address number and street name new line
@@ -132,6 +176,7 @@ export default function Input() {
                     placeholder='Address'
                     style={{ height: '200px' }}
                     onChange={changeHandler}
+                    defaultValue={address}
                   ></textarea>
                   <label htmlFor='floatingTextarea'>
                     Address Number Street Name, City, State, Zip Code (one per
@@ -146,6 +191,7 @@ export default function Input() {
                     id='file'
                     placeholder='Enter file'
                     accept='.csv'
+                    onChange={csvHandler}
                   />
                   <button type='submit' className='btn btn-primary mt-3'>
                     Submit
