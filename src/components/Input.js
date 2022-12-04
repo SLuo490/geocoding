@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import debounce from 'lodash.debounce';
 import Output from './Output';
+import uuid from 'react-uuid';
 
 export default function Input() {
   // use state that store a string of addresses
@@ -164,7 +165,10 @@ export default function Input() {
               {ready &&
                 coordinatesResult.map((coordinates) => {
                   return (
-                    <Marker position={[coordinates[0], coordinates[1]]}>
+                    <Marker
+                      key={uuid()}
+                      position={[coordinates[0], coordinates[1]]}
+                    >
                       <Popup>
                         <span>
                           {coordinates[0]}, {coordinates[1]}
