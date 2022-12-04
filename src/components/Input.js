@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
+import { MapContainer, TileLayer } from 'react-leaflet';
 import debounce from 'lodash.debounce';
 import Output from './Output';
 import ErrorAlert from './ErrorAlert';
+import MarkerComponent from './Marker';
 import uuid from 'react-uuid';
 import '../App.css';
 
@@ -39,12 +40,9 @@ export default function Input() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setResult([[]]);
-    setCoordinates([[]]);
-
-    // if (!address) {
-    //   setError('Please enter an address');
-    // }
+    setCoordinates([]);
+    setResult([]);
+    setReady(true);
 
     // parse through the address string and return an list of address number and street name new line
     const parseAddress = (address) => {
@@ -61,36 +59,34 @@ export default function Input() {
       return parse;
     };
 
-    if (address) {
-      // parse the address
-      const currentAddressArray = parseAddress(address);
-      // loop through addressNumAndStreetName and make fetch request to each address
-      currentAddressArray.forEach((address) => {
-        const [addressNum, streetName, boroughNum, stateAndZip] = address;
-        const getData = async () => {
-          await fetch(
-            `/geoservice/geoservice.svc/Function_1A?Borough=${boroughNum}&AddressNo=${addressNum}&StreetName=${streetName}&Key=${process.env.REACT_APP_API_KEY}`
-          )
-            .then((resp) => {
-              return resp.json();
-            })
-            .then((data) => {
-              // set the coordinates state to the coordinates of the address
-              const lat = data.display.out_lat_property;
-              const lon = data.display.out_lon_property;
-              setCoordinates((coordinates) => [...coordinates, [lat, lon]]);
-              setResult((result) => [
-                ...result,
-                [addressNum, streetName, boroughNum, stateAndZip, lat, lon],
-              ]);
-            })
-            .catch((err) => {
-              setError(err);
-            });
-        };
-        getData();
-      });
-    }
+    // parse the address
+    const currentAddressArray = parseAddress(address);
+    // loop through addressNumAndStreetName and make fetch request to each address
+    currentAddressArray.forEach((address) => {
+      const [addressNum, streetName, boroughNum, stateAndZip] = address;
+      const getData = async () => {
+        await fetch(
+          `/geoservice/geoservice.svc/Function_1A?Borough=${boroughNum}&AddressNo=${addressNum}&StreetName=${streetName}&Key=${process.env.REACT_APP_API_KEY}`
+        )
+          .then((resp) => {
+            return resp.json();
+          })
+          .then((data) => {
+            // set the coordinates state to the coordinates of the address
+            const lat = data.display.out_lat_property;
+            const lon = data.display.out_lon_property;
+            setCoordinates((coordinates) => [...coordinates, [lat, lon]]);
+            setResult((result) => [
+              ...result,
+              [addressNum, streetName, boroughNum, stateAndZip, lat, lon],
+            ]);
+          })
+          .catch((err) => {
+            setError(err);
+          });
+      };
+    });
+    setReady(false);
   };
 
   useEffect(() => {
@@ -173,16 +169,7 @@ export default function Input() {
               {ready &&
                 coordinatesResult.map((coordinates) => {
                   return (
-                    <Marker
-                      key={uuid()}
-                      position={[coordinates[0], coordinates[1]]}
-                    >
-                      <Popup>
-                        <span>
-                          {coordinates[0]}, {coordinates[1]}
-                        </span>
-                      </Popup>
-                    </Marker>
+                    <MarkerComponent coordinates={coordinates} key={uuid()} />
                   );
                 })}
             </MapContainer>
