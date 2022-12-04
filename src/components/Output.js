@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { CSVLink } from 'react-csv';
 export default function Output(props) {
   const [showResult, setShowResult] = useState('');
   const { result } = props;
@@ -58,7 +59,10 @@ export default function Output(props) {
             <form>
               <div className='form-group pt-4'>
                 <h5>
-                  Copy and paste coordinates to spreadsheet, or download a csv.
+                  Copy and paste coordinates to spreadsheet, or
+                  <CSVLink data={showResult} className='text-decoration-none'>
+                    download a csv.
+                  </CSVLink>
                 </h5>
                 <div className='form-floating'>
                   <textarea

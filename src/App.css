@@ -1,3 +1,17 @@
 .leaflet-container {
   height: 100%;
 }
+
+/* Set background of form-floating to white */
+
+.form-floating {
+  position: relative;
+}
+
+.form-floating:before {
+  content: '';
+  position: absolute;
+  width: calc(100% - 14px); /* to show scrollbar */
+  height: 32px;
+  background-color: #ffffff;
+}

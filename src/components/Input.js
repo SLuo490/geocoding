@@ -3,6 +3,7 @@ import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import debounce from 'lodash.debounce';
 import Output from './Output';
 import uuid from 'react-uuid';
+import '../App.css';
 
 export default function Input() {
   // use state that store a string of addresses
@@ -122,7 +123,6 @@ export default function Input() {
                   <textarea
                     className='form-control'
                     placeholder='Address'
-                    id='floatingTextarea'
                     style={{ height: '200px' }}
                     onChange={changeHandler}
                   ></textarea>
