@@ -34,9 +34,9 @@ export default function Input() {
       : '';
   };
 
-  const changeHandler = debounce((e) => {
+  const changeHandler = (e) => {
     setAddress(e.target.value);
-  }, 1000);
+  };
 
   // parse through the address string and return an list of address number and street name new line
   const parseAddress = (address) => {
@@ -77,7 +77,7 @@ export default function Input() {
   };
 
   // Call fetch for all data
-  const fetchAllData = async (address) => {
+  const fetchAllData = async () => {
     const currentAddressArray = parseAddress(address);
     currentAddressArray.forEach((address) => {
       const [addressNum, streetName, boroughNum, stateAndZip] = address;
@@ -145,6 +145,7 @@ export default function Input() {
                     className='form-control'
                     id='file'
                     placeholder='Enter file'
+                    accept='.csv'
                   />
                   <button type='submit' className='btn btn-primary mt-3'>
                     Submit
