@@ -61,6 +61,7 @@ export default function Output(props) {
                 <h5>
                   Copy and paste coordinates to spreadsheet, or
                   <CSVLink data={showResult} className='text-decoration-none'>
+                    {' '}
                     download a csv.
                   </CSVLink>
                 </h5>

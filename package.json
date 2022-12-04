@@ -6,7 +6,7 @@
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
+    "@testing-library/user-event": "^14.4.3",
     "a": "^2.1.2",
     "csv": "^6.2.5",
     "download": "^8.0.0",
@@ -20,7 +20,7 @@
     "react-uuid": "^2.0.0",
     "result": "^2.0.9",
     "to": "^0.2.9",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^3.1.0"
   },
   "scripts": {
     "start": "react-scripts start",
