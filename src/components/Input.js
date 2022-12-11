@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import Papa from 'papaparse';
 import Output from './Output';
@@ -21,6 +21,7 @@ export default function Input() {
 
   // Use state to parse the csv file
   const [values, setValues] = useState([]);
+  const inputRef = useRef(null);
 
   const changeHandler = (e) => {
     setAddress(e.target.value);
@@ -48,13 +49,19 @@ export default function Input() {
     });
   };
 
-  // reset the state and csv file once click on reset button
+  // reset the csv file
+  const resetCsvHandler = () => {
+    inputRef.current.value = null;
+  };
+
+  // reset the state once click on reset button
   const resetHandler = () => {
     setAddress('');
     setReady(false);
     setResult([[]]);
     setCoordinatesResult([[]]);
     setValues([]);
+    resetCsvHandler();
   };
 
   useEffect(() => {
@@ -192,6 +199,7 @@ export default function Input() {
                   <label htmlFor='file'>File</label>
                   <input
                     type='file'
+                    ref={inputRef}
                     className='form-control'
                     id='file'
                     placeholder='Enter file'
