@@ -48,20 +48,25 @@ export default function Input() {
     });
   };
 
+  // reset the state and csv file once click on reset button
+  const resetHandler = () => {
+    setAddress('');
+    setReady(false);
+    setResult([[]]);
+    setCoordinatesResult([[]]);
+    setValues([]);
+  };
+
   useEffect(() => {
     // parse the values array and store the address in a string
-    if (values === undefined) {
-      setValues([['abc']]);
-    } else {
-      const parseValues = () => {
-        let addressString = '';
-        values.forEach((value) => {
-          addressString += `${value.address} ${value.street}, ${value.borough}, ${value.state} ${value.zip} \n`;
-        });
-        setAddress(addressString);
-      };
-      parseValues();
-    }
+    const parseValues = () => {
+      let addressString = '';
+      values.forEach((value) => {
+        addressString += `${value.address} ${value.street}, ${value.borough}, ${value.state} ${value.zip} \n`;
+      });
+      setAddress(addressString);
+    };
+    parseValues();
   }, [values]);
 
   // parse the borough, if borough is manhattan return "1", if borough is bronx return "2". etc.
@@ -176,7 +181,7 @@ export default function Input() {
                     placeholder='Address'
                     style={{ height: '200px' }}
                     onChange={changeHandler}
-                    defaultValue={address}
+                    value={address}
                   ></textarea>
                   <label htmlFor='floatingTextarea'>
                     Address Number Street Name, City, State, Zip Code (one per
@@ -195,6 +200,13 @@ export default function Input() {
                   />
                   <button type='submit' className='btn btn-primary mt-3'>
                     Submit
+                  </button>
+                  <button
+                    type='submit'
+                    className='btn btn-danger mt-3 ms-3'
+                    onClick={resetHandler}
+                  >
+                    Reset
                   </button>
                 </div>
               </div>
