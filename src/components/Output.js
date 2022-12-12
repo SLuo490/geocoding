@@ -71,6 +71,7 @@ export default function Output(props) {
                     placeholder='Address'
                     id='floatingTextarea'
                     style={{ height: '200px' }}
+                    // value={showResult}
                     value={showResult}
                     onChange={(e) => setShowResult(e.target.value)}
                   ></textarea>
