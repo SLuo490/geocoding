@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 export default function Nav() {
   return (
     <nav className='navbar navbar-expand-lg navbar-dark bg-dark'>
@@ -24,9 +26,9 @@ export default function Nav() {
               </a>
             </li>
             <li className='nav-item'>
-              <a className='nav-link' href='/Doc'>
-                Documentation
-              </a>
+              <Link className='nav-link' to='/Manual'>
+                User Manual
+              </Link>
             </li>
           </ul>
         </div>

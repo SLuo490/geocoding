@@ -62,7 +62,7 @@ export default function Output(props) {
                   Copy and paste coordinates to spreadsheet, or
                   <CSVLink data={showResult} className='text-decoration-none'>
                     {' '}
-                    download a csv.
+                    download as csv.
                   </CSVLink>
                 </h5>
                 <div className='form-floating'>
