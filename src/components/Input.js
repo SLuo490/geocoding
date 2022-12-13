@@ -112,7 +112,7 @@ export default function Input() {
   // Call data for one fetch
   const getData = async (addressNum, streetName, boroughNum, stateAndZip) => {
     await fetch(
-      `/geoservice/geoservice.svc/Function_1A?Borough=${boroughNum}&AddressNo=${addressNum}&StreetName=${streetName}&Key=${process.env.REACT_APP_API_KEY}`
+      `https://geoservice.planning.nyc.gov/geoservice/geoservice.svc/Function_1A?Borough=${boroughNum}&AddressNo=${addressNum}&StreetName=${streetName}&Key=${process.env.REACT_APP_API_KEY}`
     )
       .then((resp) => {
         return resp.json();
