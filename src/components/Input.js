@@ -225,7 +225,7 @@ export default function Input() {
       <div className='container pt-4'>
         <div className='row'>
           <div className='col-md-12 offset-md-0'>
-            <MapContainer
+            {/* <MapContainer
               style={{ height: '50vh', width: '100%' }}
               center={[40.7128, -74.006]}
               zoom={12}
@@ -241,11 +241,13 @@ export default function Input() {
                     <MarkerComponent coordinates={coordinates} key={uuid()} />
                   );
                 })}
-            </MapContainer>
+            </MapContainer> */}
           </div>
         </div>
       </div>
-      <div>{/* <Output result={result} /> */}</div>
+      <div>
+        <Output result={result} />
+      </div>
     </div>
   );
 }
