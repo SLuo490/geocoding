@@ -245,9 +245,7 @@ export default function Input() {
           </div>
         </div>
       </div>
-      <div>
-        <Output result={result} />
-      </div>
+      <div>{/* <Output result={result} /> */}</div>
     </div>
   );
 }
