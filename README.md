@@ -10,7 +10,7 @@
 Geocoding is an app that allows user to input a list of addresses (or csv file) and map the coordinates into a map and allows user to download the coordinates as a CSV file. 
 
 ## Technologies
-I used `HTML`, `CSS`, `ReactJS`
+I used `HTML`, `CSS`, `ReactJS`, `Bootstrap`
 
 ## Setup
 - download or clone the repository
