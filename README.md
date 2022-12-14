@@ -13,7 +13,8 @@ Geocoding is an app that allows user to input a list of addresses (or csv file) 
 I used `HTML`, `CSS`, `ReactJS`, `Bootstrap`
 
 ## Setup
-- download or clone the repository
+- `git clone`the url to your terminal
+- `cd geocoding` to the geocoding folder
 - run `npm install`
 - run `npm start`
 - add `.env` file to the root directory and add api key to access geosupport's api
